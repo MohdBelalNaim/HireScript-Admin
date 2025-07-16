@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 const firebaseConfig = {
-  apiKey: "AIzaSyA79rboSWMThMwBK8f2G2i2UZENbFfeojE",
-  authDomain: "letswork-80bcb.firebaseapp.com",
-  projectId: "letswork-80bcb",
-  storageBucket: "letswork-80bcb.firebasestorage.app",
-  messagingSenderId: "691292383081",
-  appId: "1:691292383081:web:5831bdc776db187efa7ff8",
-  measurementId: "G-N3VD0PWF5N",
+  apiKey: "AIzaSyD2fdVbBLYNR7UUgC9zxY8Pu5M7QCZmW0w",
+  authDomain: "hirescript-81cb7.firebaseapp.com",
+  projectId: "hirescript-81cb7",
+  storageBucket: "hirescript-81cb7.firebasestorage.app",
+  messagingSenderId: "561385522370",
+  appId: "1:561385522370:web:6b3b5329e7800f4332275b",
+  measurementId: "G-LQX95Z069W",
 };
 
 // Initialize Firebase
