@@ -37,20 +37,23 @@ const Add = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <h2 className="text-xl font-semibold mb-4 text-blue-600">Add a New Job</h2>
+    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-xl my-4 ">
+      <h2 className="text-2xl font-semibold text-blue-600 mb-6">
+        Add a New Job
+      </h2>
 
-      <form onSubmit={handleSubmit(handleAddJob)} className="space-y-4">
+      <form onSubmit={handleSubmit(handleAddJob)} className="space-y-5">
         {fields.map((field, index) => (
           <div key={index}>
             <label className="block mb-1 text-sm text-gray-700 capitalize">
               {field}
             </label>
             <input
+              id={field}
               type="text"
               placeholder={`Enter ${field}`}
               {...register(field, { required: true })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
         ))}

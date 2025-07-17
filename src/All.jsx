@@ -36,29 +36,34 @@ const All = () => {
   useEffect(() => {
     fetchJobs();
   }, []);
-
+  const totalJobs = jobs.length
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4 text-blue-600">All Jobs</h2>
-
+    <div className="p-4">
+      <h2 className="text-2xl font-semibold text-blue-600 mb-6">All Jobs</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                    <h3 className="text-sm text-gray-500">Total Jobs</h3>
+                    <p className="text-2xl font-semibold text-blue-600">{totalJobs}</p>
+                </div>
+      </div>
       {loading ? (
-        <div className="p-4 text-sm text-gray-600">Loading jobs...</div>
+        <div className="p-4 text-gray-600 text-center text-sm">Loading jobs...</div>
       ) : jobs.length === 0 ? (
-        <div className="p-4 text-sm text-gray-500">No jobs found.</div>
+        <div className="p-4 text-gray-500 text-center text-sm">No jobs found.</div>
       ) : (
-        <div className="overflow-x-auto border rounded-md">
+        <div className="overflow-x-auto rounded-lg shadow border border-gray-200">
           <table className="min-w-full text-sm text-left text-gray-800">
-            <thead className="bg-blue-50 text-blue-600">
+            <thead className="bg-blue-50 text-blue-700">
               <tr>
-                <th className="px-4 py-2 font-medium">Job ID</th>
-                <th className="px-4 py-2 font-medium">Company</th>
-                <th className="px-4 py-2 font-medium">Title</th>
-                <th className="px-4 py-2 font-medium">Location</th>
-                <th className="px-4 py-2 font-medium">Pay</th>
-                <th className="px-4 py-2 font-medium">Actions</th>
+                <th className="px-4 py-3 font-medium">Job ID</th>
+                <th className="px-4 py-3 font-medium">Company</th>
+                <th className="px-4 py-3 font-medium">Title</th>
+                <th className="px-4 py-3 font-medium">Location</th>
+                <th className="px-4 py-3 font-medium">Pay</th>
+                <th className="px-4 py-3 font-medium">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-200 bg-white">
               {jobs.map((job) => (
                 <tr key={job.id} className="hover:bg-gray-50">
                   <td className="px-4 py-2">{job.id}</td>
@@ -67,9 +72,9 @@ const All = () => {
                   <td className="px-4 py-2">{job.location || "-"}</td>
                   <td className="px-4 py-2">{job.salary || "-"} LPA</td>
                   <td className="px-4 py-2">
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1">
                       <Link to={`/edit/${job.id}`}>
-                        <button className="px-3 py-1 text-blue-600 border border-blue-600 rounded hover:bg-blue-50">
+                        <button className="px-3 py-1.5 border text-sm text-blue-600 border-blue-600 rounded hover:bg-blue-100 transition-all duration-150">
                           Edit
                         </button>
                       </Link>
@@ -77,13 +82,13 @@ const All = () => {
                         href={`https://www.hirescript.tech/details/${job.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-3 py-1 text-blue-600 border border-blue-600 rounded hover:bg-blue-50"
+                        className="px-3 py-1.5 border text-sm text-green-600 border-green-600 rounded hover:bg-green-50 transition-all duration-150"
                       >
                         View
                       </a>
                       <button
                         onClick={() => handleDelete(job.id)}
-                        className="px-3 py-1 text-red-600 border border-red-500 rounded hover:bg-red-50"
+                        className="px-3 py-1.5 border text-sm text-red-600 border-red-500 rounded hover:bg-red-50 transition-all duration-150"
                       >
                         Delete
                       </button>
