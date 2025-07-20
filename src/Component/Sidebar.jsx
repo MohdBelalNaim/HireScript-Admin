@@ -6,6 +6,8 @@ const sidebarItems = [
   { name: "Home", path: "/", icon: <Home size={18} /> },
   { name: "Add Jobs", path: "/add", icon: <Bookmark size={18} /> },
   { name: "People", path: "/people", icon: <User size={18} /> },
+  { name: "Create Courses", path: "/create-course", icon: <Bookmark size={18} /> },
+  { name: "All Courses", path: "/courses", icon: <Bookmark size={18} /> },
 ];
 
 const Sidebar = () => {
