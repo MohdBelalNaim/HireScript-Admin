@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../firebase";
 import Sidebar from "../Component/Sidebar";
 import Header from "../Component/Header";
@@ -7,6 +7,7 @@ import Header from "../Component/Header";
 const AllCoursesPage = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -25,6 +26,17 @@ const AllCoursesPage = () => {
     };
     fetchCourses();
   }, []);
+  const RegisteredEmails = courses.map(course => course.registeredEmails).flat();
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this course?")) return;
+    try {
+      await deleteDoc(doc(db, "courses", id));
+      setCourses((prev) => prev.filter((course) => course.id !== id)); // Fixed here
+    } catch (error) {
+      console.error("Error deleting course:", error);
+      alert("Failed to delete course.");
+    }
+  };
 
   return (
     <div className="bg-blue-50 min-h-screen flex flex-col">
@@ -51,9 +63,11 @@ const AllCoursesPage = () => {
                       <th className="px-4 py-3 font-medium">Start Date</th>
                       <th className="px-4 py-3 font-medium">End Date</th>
                       <th className="px-4 py-3 font-medium">Price</th>
-                      <th className="px-4 py-3 font-medium">Category</th>
+                      <th className="px-4 py-3 font-medium">Registered Emails</th>
                       <th className="px-4 py-3 font-medium">Seats Left</th>
                       <th className="px-4 py-3 font-medium">Technologies</th>
+                      <th className="px-4 py-3 font-medium">Actions</th>
+
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
@@ -65,9 +79,23 @@ const AllCoursesPage = () => {
                         <td className="px-4 py-2">{course.startDate}</td>
                         <td className="px-4 py-2">{course.endDate}</td>
                         <td className="px-4 py-2">{course.price}</td>
-                        <td className="px-4 py-2">{course.category}</td>
+                        <td className="px-4 py-2">{course.registeredEmails && (
+                          <ul className="text-sm text-gray-700 mt-2">
+                            {Object.keys(course.registeredEmails).map((emailKey) => (
+                              <li key={emailKey}>{emailKey.replace(/_/g, ".")}</li> // restoring dot if replaced earlier
+                            ))}
+                          </ul>
+                        )}</td>
                         <td className="px-4 py-2">{course.seatsLeft}</td>
                         <td className="px-4 py-2">{course.technologies}</td>
+                        <td className="px-4 py-2">
+                          <button
+                            onClick={() => handleDelete(course.id)}
+                            className="px-3 py-1.5 border text-sm text-red-600 border-red-500 rounded hover:bg-red-50 transition-all duration-150"
+                          >
+                            Delete
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>

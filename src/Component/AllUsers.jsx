@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../firebase";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 const AllUsers = () => {
     const [user, setUser] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const navigate = useNavigate();
     const fetchJobs = async () => {
         setLoading(true);
         try {
@@ -25,8 +24,11 @@ const AllUsers = () => {
     const handleDelete = async (uid) => {
         if (!window.confirm("Are you sure you want to delete this user?")) return;
         try {
+            
             await deleteDoc(doc(db, "users", uid));
             setUser((prev) => prev.filter((user) => user.uid !== uid));
+            window.location.reload();
+            
         } catch (error) {
             console.error("Error deleting user:", error);
             alert("Failed to delete user.");
@@ -70,7 +72,7 @@ const AllUsers = () => {
                                 <th className="px-4 py-3 font-medium">College Email</th>
                                 <th className="px-4 py-3 font-medium">Phone Number</th>
                                 {/* <th className="px-4 py-3 font-medium">Skills</th> */}
-                                <th className="px-4 py-3 font-medium">Designation</th>
+                                {/* <th className="px-4 py-3 font-medium">Designation</th> */}
                                 <th className="px-4 py-3 font-medium">Action</th>
                             </tr>
                         </thead>
@@ -82,7 +84,7 @@ const AllUsers = () => {
                                     <td className="px-4 py-3">{user.email}</td>
                                     <td className="px-4 py-3">{user.college?.collegeEmail || "-"}</td>
                                     <td className="px-4 py-3">{user.phoneNumber || "-"}</td>
-                                    <td className="px-4 py-3">{user.designation || "-"}</td>
+                                    {/* <td className="px-4 py-3">{user.designation || "-"}</td> */}
 
                                     {/* <td className="px-4 py-3">{user.college.collegeName || "-"}</td> */}
                                     {/* <td className="px-4 py-3">{user.skills}</td> */}
@@ -97,7 +99,7 @@ const AllUsers = () => {
                                                 View
                                             </a> */}
                                             <button
-                                                onClick={() => handleDelete(user.uid)}
+                                                onClick={() => handleDelete(user.id)}
                                                 className="px-3 py-1.5 border text-sm text-red-600 border-red-500 rounded hover:bg-red-50 transition-all duration-150"
                                             >
                                                 Delete
