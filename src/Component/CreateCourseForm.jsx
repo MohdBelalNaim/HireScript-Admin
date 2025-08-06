@@ -1,29 +1,33 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-
+import RichTextEditor from "./RichTextEditor";
 const CreateCourseForm = ({ onSaveCourse }) => {
   const [toast, setToast] = useState(null);
+  const [description, setDescription] = useState("");
   const fields = [
     { name: "courseName", label: "Course Name", type: "text" },
     { name: "instructor", label: "Instructor", type: "text" },
-    { name: "description", label: "Description", type: "textarea" },
+    // { name: "description", label: "Description", type: "textarea" },
     { name: "duration", label: "Duration (e.g. 10 weeks)", type: "text" },
     { name: "startDate", label: "Start Date", type: "date" },
     { name: "endDate", label: "End Date", type: "date" },
     { name: "price", label: "Price", type: "number" },
     { name: "category", label: "Category", type: "text" },
+    {name: "image", label: "Image URL", type: "text"},
+    {name: "link", label: "Course Link", type: "text"},     
     { name: "seatsLeft", label: "Seats Left", type: "number" },
     { name: "technologies", label: "Technologies to be Taught", type: "text" },
   ];
 
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset ,setValue } = useForm();
 
   const handleAddCourse = async (data) => {
     try {
       await onSaveCourse(data);
       setToast({ type: "success", message: "Course added successfully!" });
       reset();
+      setDescription("");
     } catch (error) {
       setToast({ type: "error", message: "Error adding course: " + error.message });
     }
@@ -63,6 +67,23 @@ const CreateCourseForm = ({ onSaveCourse }) => {
             )}
           </div>
         ))}
+        <div>
+  <label className="block mb-2 text-sm font-medium text-gray-700">
+    Description *
+  </label>
+  <RichTextEditor
+    value={description}
+    onChange={(value) => {
+      setDescription(value);
+      setValue("description", value); // if using react-hook-form
+    }}
+    placeholder="Write the job description here..."
+  />
+  <p className="mt-1 text-xs text-gray-500">
+    Use the toolbar above to format the job description with headings, lists, links, and more.
+  </p>
+</div>
+
         <button
           type="submit"
           className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition"

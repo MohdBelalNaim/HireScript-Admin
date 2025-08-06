@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { db } from "./firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import RichTextEditor from "./Component/RichTextEditor";
 
 const Add = () => {
   const fields = [
     "title",
     "company",
     "location",
-    "description",
     "salary",
     "type",
     "skills",
@@ -20,16 +20,18 @@ const Add = () => {
   ];
 
   const { register, handleSubmit, reset } = useForm();
-
+  const [description, setDescription] = useState("");
   const handleAddJob = async (data) => {
     try {
       const newJob = {
         ...data,
+        description,
         createdAt: serverTimestamp(),
       };
       await addDoc(collection(db, "jobs"), newJob);
       alert("Job added successfully!");
       reset();
+      setDescription("");
     } catch (error) {
       console.error("Error adding job:", error);
       alert("Error adding job: " + error.message);
@@ -57,6 +59,24 @@ const Add = () => {
             />
           </div>
         ))}
+
+        <div>
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Description *
+          </label>
+          <RichTextEditor
+            value={description}
+            onChange={(value) => {
+              setDescription(value);
+              // setValue("description", value); // if using react-hook-form
+            }}
+            placeholder="Write the job description here..."
+          />
+          <p className="mt-1 text-xs text-gray-500">
+            Use the toolbar above to format the job description with headings, lists, links, and more.
+          </p>
+        </div>
+
 
         <button
           type="submit"

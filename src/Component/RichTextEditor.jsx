@@ -178,24 +178,28 @@ const RichTextEditor = ({
       <div className="flex flex-wrap gap-1 p-3 border-b border-gray-200 bg-gray-50">
         {/* Formatting buttons */}
         <button
+          type="button"
           onClick={() => applyFormat("bold")}
           className="px-3 py-2 border rounded"
         >
           B
         </button>
         <button
+          type="button"
           onClick={() => applyFormat("italic")}
           className="px-3 py-2 border rounded"
         >
           I
         </button>
         <button
+          type="button"
           onClick={() => applyFormat("underline")}
           className="px-3 py-2 border rounded"
         >
           U
         </button>
         <button
+          type="button"
           onClick={() => applyFormat("strikeThrough")}
           className="px-3 py-2 border rounded"
         >
@@ -203,6 +207,7 @@ const RichTextEditor = ({
         </button>
 
         <select
+
           onChange={(e) => applyFontSize(e.target.value)}
           className="px-2 py-1 border rounded"
           defaultValue="16px"
@@ -236,12 +241,14 @@ const RichTextEditor = ({
         </select>
 
         <button
+          type="button"
           onClick={() => applyList("insertUnorderedList")}
           className="px-3 py-2 border rounded"
         >
           • List
         </button>
         <button
+          type="button"
           onClick={() => applyList("insertOrderedList")}
           className="px-3 py-2 border rounded"
         >
@@ -249,34 +256,38 @@ const RichTextEditor = ({
         </button>
 
         <button
+          type="button"
           onClick={() => applyFormat("justifyLeft")}
           className="px-3 py-2 border rounded"
         >
           ⬅️
         </button>
         <button
+          type="button"
           onClick={() => applyFormat("justifyCenter")}
           className="px-3 py-2 border rounded"
         >
           ↔️
         </button>
         <button
+          type="button"
           onClick={() => applyFormat("justifyRight")}
           className="px-3 py-2 border rounded"
         >
           ➡️
         </button>
         <button
+          type="button"
           onClick={() => applyFormat("justifyFull")}
           className="px-3 py-2 border rounded"
         >
           ⬌
         </button>
 
-        <button onClick={insertLink} className="px-3 py-2 border rounded">
+        <button type="button" onClick={insertLink} className="px-3 py-2 border rounded">
           🔗
         </button>
-        <button onClick={insertImage} className="px-3 py-2 border rounded">
+        <button type="button" onClick={insertImage} className="px-3 py-2 border rounded">
           🖼️
         </button>
 
@@ -292,18 +303,21 @@ const RichTextEditor = ({
         />
 
         <button
+          type="button"
           onClick={() => applyFormat("removeFormat")}
           className="px-3 py-2 border rounded"
         >
           🧹
         </button>
         <button
+          type="button"
           onClick={() => applyFormat("undo")}
           className="px-3 py-2 border rounded"
         >
           ↶
         </button>
         <button
+          type="button"
           onClick={() => applyFormat("redo")}
           className="px-3 py-2 border rounded"
         >
@@ -321,7 +335,8 @@ const RichTextEditor = ({
         onPaste={handlePaste}
         className="min-h-[400px] p-6 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset 
   [&_h1]:text-3xl [&_h2]:text-2xl [&_h3]:text-xl [&_h4]:text-lg 
-  [&_ul]:list-disc [&_ol]:list-decimal [&_li]:ml-6 min-h-[400px] p-6 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
+  [&_ul]:list-disc [&_ol]:list-decimal [&_li]:ml-6"
+
         suppressContentEditableWarning={true}
         data-placeholder={placeholder}
       />

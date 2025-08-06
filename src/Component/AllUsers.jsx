@@ -72,7 +72,7 @@ const AllUsers = () => {
                                 <th className="px-4 py-3 font-medium">College Email</th>
                                 <th className="px-4 py-3 font-medium">Phone Number</th>
                                 {/* <th className="px-4 py-3 font-medium">Skills</th> */}
-                                <th className="px-4 py-3 font-medium">Designation</th>
+                                {/* <th className="px-4 py-3 font-medium">Designation</th> */}
                                 <th className="px-4 py-3 font-medium">Action</th>
                             </tr>
                         </thead>
@@ -84,7 +84,7 @@ const AllUsers = () => {
                                     <td className="px-4 py-3">{user.email}</td>
                                     <td className="px-4 py-3">{user.college?.collegeEmail || "-"}</td>
                                     <td className="px-4 py-3">{user.phoneNumber || "-"}</td>
-                                    <td className="px-4 py-3">{user.designation || "-"}</td>
+                                    {/* <td className="px-4 py-3">{user.designation || "-"}</td> */}
 
                                     {/* <td className="px-4 py-3">{user.college.collegeName || "-"}</td> */}
                                     {/* <td className="px-4 py-3">{user.skills}</td> */}

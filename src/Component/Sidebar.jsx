@@ -1,19 +1,19 @@
 import React from "react";
-import { Home, Bookmark, User, LogOut } from "lucide-react";
+import { Home, Bookmark, User, LogOut, PlusCircleIcon, Book, BookA, FilePlus, File, ListFilter, ListCheck, ListEnd, BookCheck, Blocks, Newspaper, SunMoon, NetworkIcon, NewspaperIcon, ChartNetwork, EllipsisVertical, ReplyAllIcon, CreativeCommons } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const sidebarItems = [
   { name: "Home", path: "/", icon: <Home size={18} /> },
-  { name: "Add Jobs", path: "/add", icon: <Bookmark size={18} /> },
+  { name: "Add Jobs", path: "/add", icon: <PlusCircleIcon size={18} /> },
   { name: "People", path: "/people", icon: <User size={18} /> },
   {
     name: "Create Courses",
     path: "/create-course",
-    icon: <Bookmark size={18} />,
+    icon: <FilePlus size={18} />,
   },
-  { name: "All Courses", path: "/courses", icon: <Bookmark size={18} /> },
-  { name: "Create Blog", path: "/create-blog", icon: <Bookmark size={18} /> },
-  { name: "All Blogs", path: "/blogs", icon: <Bookmark size={18} /> },
+  { name: "All Courses", path: "/courses", icon: <BookCheck size={18} /> },
+  { name: "Create Blog", path: "/create-blog", icon: <CreativeCommons size={18} /> },
+  { name: "All Blogs", path: "/blogs", icon: <NewspaperIcon size={18} /> },
 ];
 
 const Sidebar = () => {
