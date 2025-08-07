@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
+import RichTextEditor from "./Component/RichTextEditor";
 
 const EditJob = () => {
   const { id } = useParams();
@@ -12,8 +13,10 @@ const EditJob = () => {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { isSubmitting },
   } = useForm();
+
 
   const [loading, setLoading] = useState(true);
 
@@ -21,7 +24,6 @@ const EditJob = () => {
     "title",
     "company",
     "location",
-    "description",
     "salary",
     "type",
     "skills",
@@ -31,6 +33,8 @@ const EditJob = () => {
     "deadline",
     "companyLogo",
   ];
+
+
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -92,15 +96,64 @@ const EditJob = () => {
                 />
               </div>
             ))}
-
+            <div>
+              <label className="block mb-1 text-sm text-gray-700 capitalize">
+                Job Description
+              </label>
+            <Controller
+              name="jobDescription"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <RichTextEditor
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Edit Job Description "
+                />
+              )}
+            />
+            </div>
+            <div>
+              <label className="block mb-1 text-sm text-gray-700 capitalize">
+                Company Description
+              </label>
+            <Controller
+              name="companyDescription"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <RichTextEditor
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Edit Company Description "
+                />
+              )}
+            />
+            </div>
+            <div>
+              <label className="block mb-1 text-sm text-gray-700 capitalize">
+                Job Requirement
+              </label>
+            <Controller
+              name="jobRequirements"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <RichTextEditor
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Edit Job Requirement "
+                />
+              )}
+            />
+            </div>
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full px-4 py-2 rounded-md text-white text-sm transition ${
-                isSubmitting
+              className={`w-full px-4 py-2 rounded-md text-white text-sm transition ${isSubmitting
                   ? "bg-blue-300 cursor-not-allowed"
                   : "bg-blue-600 hover:bg-blue-700"
-              }`}
+                }`}
             >
               {isSubmitting ? "Updating..." : "Update Job"}
             </button>
