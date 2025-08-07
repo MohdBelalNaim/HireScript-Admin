@@ -3,12 +3,12 @@ import { useForm } from "react-hook-form";
 import { db } from "./firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import RichTextEditor from "./Component/RichTextEditor";
+import CityAutocomplete from "./Component/CityAutocomplete"; // Import the new component
 
 const Add = () => {
   const fields = [
     "title",
     "company",
-    "location",
     "salary",
     "type",
     "skills",
@@ -19,12 +19,15 @@ const Add = () => {
     "companyLogo",
   ];
 
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, setValue, watch } = useForm();
   const [description, setDescription] = useState("");
+  const [location, setLocation] = useState(""); // Add location state
+
   const handleAddJob = async (data) => {
     try {
       const newJob = {
         ...data,
+        location, // Include location from state
         description,
         createdAt: serverTimestamp(),
       };
@@ -32,14 +35,20 @@ const Add = () => {
       alert("Job added successfully!");
       reset();
       setDescription("");
+      setLocation(""); // Reset location
     } catch (error) {
       console.error("Error adding job:", error);
       alert("Error adding job: " + error.message);
     }
   };
 
+  const handleLocationChange = (value) => {
+    setLocation(value);
+    setValue("location", value); // Update react-hook-form value
+  };
+
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-xl my-4 ">
+    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-xl my-4">
       <h2 className="text-2xl font-semibold text-blue-600 mb-6">
         Add a New Job
       </h2>
@@ -60,6 +69,17 @@ const Add = () => {
           </div>
         ))}
 
+        {/* Replace the location input with the autocomplete component */}
+        <div>
+          <label className="block mb-1 text-sm text-gray-700">Location *</label>
+          <CityAutocomplete
+            value={location}
+            onChange={handleLocationChange}
+            placeholder="Search for Indian cities..."
+            required={true}
+          />
+        </div>
+
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-700">
             Description *
@@ -68,15 +88,14 @@ const Add = () => {
             value={description}
             onChange={(value) => {
               setDescription(value);
-              // setValue("description", value); // if using react-hook-form
             }}
             placeholder="Write the job description here..."
           />
           <p className="mt-1 text-xs text-gray-500">
-            Use the toolbar above to format the job description with headings, lists, links, and more.
+            Use the toolbar above to format the job description with headings,
+            lists, links, and more.
           </p>
         </div>
-
 
         <button
           type="submit"
