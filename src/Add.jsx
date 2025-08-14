@@ -1,50 +1,43 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+
 import { db } from "./firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, Timestamp } from "firebase/firestore";
 import RichTextEditor from "./Component/RichTextEditor";
 import CityAutocomplete from "./Component/CityAutocomplete"; // Import the new component
 
 const Add = () => {
+  const RTEdata = {
+    description: "",
+    jobRequirements: "",
+    companyDescription: "",
+    location : "",
+  };
   const fields = [
-    "title",
-    "company",
-    "salary",
-    "type",
-    "skills",
-    "experience",
-    "applyLink",
-    "contactEmail",
-    "deadline",
-    "companyLogo",
+    { name: "title", placeholder: "Enter Job Title" },
+    { name: "company", placeholder: "Enter Company Name" },
+    { name: "companyLogo", placeholder: "Enter Company Logo URL", type: "url" },
+    { name: "description", placeholder: "Enter Job Description", isRTE: true },
+    { name: "experience", placeholder: "Enter Required Experience", type: "number" },
+    { name: "type", placeholder: "Select Job Type" },
+    { name: "salary", placeholder: "Enter Salary Amount", type: "number" },
+    { name: "salaryType", placeholder: "Select Salary Type" },
+    { name: "jobRequirements", placeholder: "Enter Job Requirements", isRTE: true },
+    { name: "companyDescription", placeholder: "Enter Company Description", isRTE: true },
+    { name: "applyLink", placeholder: "Enter Application Link", type: "url" },
+    { name: "postedBy", placeholder: "Enter Posted By (optional)" },
+    { name: "skills", placeholder: "Enter Required Skills" },
+    { name: "about", placeholder: "Enter About Section (optional)" },
+    { name: "website", placeholder: "Enter Company Website (optional)", type: "url" }
   ];
-
-
-
-  const { register, handleSubmit, reset, setValue, watch } = useForm();
-  const [companyDescription, setCompanyDescription] = useState("");
-  const [jobDescription, setJobDescription] = useState("");
-  const [jobRequirements, setJobRequirements] = useState("");
-  const [location, setLocation] = useState(""); // Add location state
-
-
-  const handleAddJob = async (data) => {
+  const handleAddJob = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData)
     try {
-      const newJob = {
-        ...data,
-        location, // Include location from state
-        companyDescription,
-        jobDescription,
-        jobRequirements,
-        createdAt: serverTimestamp(),
-      };
-      await addDoc(collection(db, "jobs"), newJob);
+       await addDoc(collection(db, "jobs"), {
+        ...data, ...RTEdata, createdAt: serverTimestamp()
+      });
       alert("Job added successfully!");
-      reset();
-      setCompanyDescription("");
-      setJobDescription("");
-      setJobRequirements("");
-      setLocation(""); // Reset location
+      event.target.reset();
     } catch (error) {
       console.error("Error adding job:", error);
       alert("Error adding job: " + error.message);
@@ -52,8 +45,7 @@ const Add = () => {
   };
 
   const handleLocationChange = (value) => {
-    setLocation(value);
-    setValue("location", value); // Update react-hook-form value
+    RTEdata.location=value;
   };
 
   const jobCategories = [
@@ -73,20 +65,29 @@ const Add = () => {
         Add a New Job
       </h2>
 
-      <form onSubmit={handleSubmit(handleAddJob)} className="space-y-5">
+      <form method="POST" onSubmit={handleAddJob} className="space-y-5">
         {fields.map((field, index) => (
-          <div key={index}>
-            <label className="block mb-1 text-sm text-gray-700 capitalize">
-              {field}
-            </label>
-            <input
-              id={field}
-              type="text"
-              placeholder={`Enter ${field}`}
-              {...register(field, { required: true })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
+          field.isRTE ?
+            <RichTextEditor
+              placeholder={field.placeholder}
+              onChange={(value) => RTEdata[field.name] = value}
+              key={field.name}
+            /> :
+            <div key={index}>
+              <label className="block mb-1 text-sm text-gray-700 capitalize">
+                {field.placeholder}
+              </label>
+
+              <input
+                key={field.name}
+                id={field.name}
+                type={field?.type || "text"}
+                placeholder={field.placeholder}
+                name={field.name}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+
         ))}
 
         {/* Replace the location input with the autocomplete component */}
@@ -99,73 +100,7 @@ const Add = () => {
             required={true}
           />
         </div>
-
-        <div>
-          <label className="block mb-1 text-sm text-gray-700">Job Category *</label>
-          <select
-            {...register("category", { required: true })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            defaultValue=""
-          >
-            <option value="" disabled>-- Select a category --</option>
-            {jobCategories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-        </div>
-
-
-        <div>
-          <label className="block mb-2 text-sm font-medium text-gray-700">
-            Job Description *
-          </label>
-          <RichTextEditor
-            value={jobDescription}
-            onChange={(value) => {
-              setJobDescription(value);
-            }}
-            placeholder="Write the job description here..."
-          />
-          <p className="mt-1 text-xs text-gray-500">
-            Use the toolbar above to format the job description with headings,
-            lists, links, and more.
-          </p>
-        </div>
-        <div>
-          <label className="block mb-2 text-sm font-medium text-gray-700">
-            Company Description *
-          </label>
-          <RichTextEditor
-            value={companyDescription}
-            onChange={(value) => {
-              setCompanyDescription(value);
-            }}
-            placeholder="Write the Company description here..."
-          />
-          <p className="mt-1 text-xs text-gray-500">
-            Use the toolbar above to format the job description with headings, lists, links, and more.
-          </p>
-        </div>
-        <div>
-          <label className="block mb-2 text-sm font-medium text-gray-700">
-            Job Requirements/Role *
-          </label>
-          <RichTextEditor
-            value={jobRequirements}
-            onChange={(value) => {
-              setJobRequirements(value);
-            }}
-            placeholder="Write the job Requirement here..."
-          />
-          <p className="mt-1 text-xs text-gray-500">
-            Use the toolbar above to format the job description with headings, lists, links, and more.
-          </p>
-        </div>
-
-
-        <button
+       <button
           type="submit"
           className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition"
         >
