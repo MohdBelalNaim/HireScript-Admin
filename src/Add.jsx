@@ -10,7 +10,6 @@ const Add = () => {
     "title",
     "company",
     "salary",
-    "type",
     "skills",
     "experience",
     "applyLink",
@@ -19,14 +18,11 @@ const Add = () => {
     "companyLogo",
   ];
 
-
-
   const { register, handleSubmit, reset, setValue, watch } = useForm();
   const [companyDescription, setCompanyDescription] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [jobRequirements, setJobRequirements] = useState("");
   const [location, setLocation] = useState(""); // Add location state
-
 
   const handleAddJob = async (data) => {
     try {
@@ -88,6 +84,19 @@ const Add = () => {
             />
           </div>
         ))}
+        <div>
+          <label className="block mb-1 text-sm text-gray-700">
+            Job Type
+          </label>
+          <select
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            {...register("type", { required: true })}
+          >
+            <option value="None">Select type</option>
+            <option value="In office">In office</option>
+            <option value="Remote">Remote</option>
+          </select>
+        </div>
 
         {/* Replace the location input with the autocomplete component */}
         <div>
@@ -101,13 +110,17 @@ const Add = () => {
         </div>
 
         <div>
-          <label className="block mb-1 text-sm text-gray-700">Job Category *</label>
+          <label className="block mb-1 text-sm text-gray-700">
+            Job Category *
+          </label>
           <select
             {...register("category", { required: true })}
             className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             defaultValue=""
           >
-            <option value="" disabled>-- Select a category --</option>
+            <option value="" disabled>
+              -- Select a category --
+            </option>
             {jobCategories.map((cat) => (
               <option key={cat} value={cat}>
                 {cat}
@@ -115,7 +128,6 @@ const Add = () => {
             ))}
           </select>
         </div>
-
 
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-700">
@@ -145,7 +157,8 @@ const Add = () => {
             placeholder="Write the Company description here..."
           />
           <p className="mt-1 text-xs text-gray-500">
-            Use the toolbar above to format the job description with headings, lists, links, and more.
+            Use the toolbar above to format the job description with headings,
+            lists, links, and more.
           </p>
         </div>
         <div>
@@ -160,10 +173,10 @@ const Add = () => {
             placeholder="Write the job Requirement here..."
           />
           <p className="mt-1 text-xs text-gray-500">
-            Use the toolbar above to format the job description with headings, lists, links, and more.
+            Use the toolbar above to format the job description with headings,
+            lists, links, and more.
           </p>
         </div>
-
 
         <button
           type="submit"
