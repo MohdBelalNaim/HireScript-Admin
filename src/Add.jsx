@@ -3,13 +3,13 @@ import { db } from "./firebase";
 import { collection, addDoc, serverTimestamp, Timestamp } from "firebase/firestore";
 import RichTextEditor from "./Component/RichTextEditor";
 import CityAutocomplete from "./Component/CityAutocomplete"; // Import the new component
-
 const Add = () => {
   const RTEdata = {
     description: "",
     jobRequirements: "",
     companyDescription: "",
     location: "",
+    type:"",
   };
   const fields = [
     { name: "title", placeholder: "Enter Job Title" },
@@ -32,6 +32,8 @@ const Add = () => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData)
+    console.log(data)
+    return;
     try {
       await addDoc(collection(db, "jobs"), {
         ...data, ...RTEdata, createdAt: serverTimestamp()
@@ -95,6 +97,20 @@ const Add = () => {
             </div>
 
         ))}
+        <div>
+          <label className="block mb-1 text-sm text-gray-700">
+            Job Type
+          </label>
+          <select
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            name="type"
+            onChange={(e)=>RTEdata.type=e.target.value}
+          >
+            <option value="None">Select type</option>
+            <option value="In office">In office</option>
+            <option value="Remote">Remote</option>
+          </select>
+        </div>
 
         {/* Replace the location input with the autocomplete component */}
         <div>
