@@ -9,7 +9,7 @@ const Add = () => {
     description: "",
     jobRequirements: "",
     companyDescription: "",
-    location : "",
+    location: "",
   };
   const fields = [
     { name: "title", placeholder: "Enter Job Title" },
@@ -33,7 +33,7 @@ const Add = () => {
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData)
     try {
-       await addDoc(collection(db, "jobs"), {
+      await addDoc(collection(db, "jobs"), {
         ...data, ...RTEdata, createdAt: serverTimestamp()
       });
       alert("Job added successfully!");
@@ -45,7 +45,7 @@ const Add = () => {
   };
 
   const handleLocationChange = (value) => {
-    RTEdata.location=value;
+    RTEdata.location = value;
   };
 
   const jobCategories = [
@@ -100,7 +100,22 @@ const Add = () => {
             required={true}
           />
         </div>
-       <button
+
+        <div>
+          <label className="block mb-1 text-sm text-gray-700">Job Category</label>
+          <select
+            name="category"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            defaultValue=""
+            required
+          >
+            <option value="" disabled>Select category</option>
+            {jobCategories.map((cat) => (
+              <option value={cat} key={cat}>{cat}</option>
+            ))}
+          </select>
+        </div>
+        <button
           type="submit"
           className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition"
         >
