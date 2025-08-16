@@ -68,11 +68,17 @@ const Add = () => {
       <form method="POST" onSubmit={handleAddJob} className="space-y-5">
         {fields.map((field, index) => (
           field.isRTE ?
+          <div>
+            <label className="block mb-1 text-sm text-gray-700 capitalize">
+                {field.placeholder}
+            </label>
             <RichTextEditor
               placeholder={field.placeholder}
               onChange={(value) => RTEdata[field.name] = value}
               key={field.name}
-            /> :
+            /> 
+            </div> 
+            :
             <div key={index}>
               <label className="block mb-1 text-sm text-gray-700 capitalize">
                 {field.placeholder}
