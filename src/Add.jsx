@@ -32,8 +32,6 @@ const Add = () => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData)
-    console.log(data)
-    return;
     try {
       await addDoc(collection(db, "jobs"), {
         ...data, ...RTEdata, createdAt: serverTimestamp()
