@@ -139,7 +139,7 @@ const Add = () => {
               setJobDescription(value);
             }}
             placeholder="Write the job description here..."
-          />
+          />  
           <p className="mt-1 text-xs text-gray-500">
             Use the toolbar above to format the job description with headings,
             lists, links, and more.
