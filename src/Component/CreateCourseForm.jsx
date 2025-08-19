@@ -1,88 +1,124 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
 import RichTextEditor from "./RichTextEditor";
-const CreateCourseForm = ({ onSaveCourse }) => {
-  const [toast, setToast] = useState(null);
-  const [description, setDescription] = useState("");
-  const fields = [
-    { name: "courseName", label: "Course Name", type: "text" },
-    { name: "instructor", label: "Instructor", type: "text" },
-    // { name: "description", label: "Description", type: "textarea" },
-    { name: "duration", label: "Duration (e.g. 10 weeks)", type: "text" },
-    { name: "startDate", label: "Start Date", type: "date" },
-    { name: "endDate", label: "End Date", type: "date" },
-    { name: "price", label: "Price", type: "number" },
-    { name: "category", label: "Category", type: "text" },
-    {name: "image", label: "Image URL", type: "text"},
-    {name: "link", label: "Course Link", type: "text"},     
-    { name: "seatsLeft", label: "Seats Left", type: "number" },
-    { name: "technologies", label: "Technologies to be Taught", type: "text" },
-  ];
+import { db } from "../firebase";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
-  const { register, handleSubmit, reset ,setValue } = useForm();
+const CreateCourseForm = () => {
+  const { register, handleSubmit, setValue, reset } = useForm();
+  const [overView, setOverView] = useState("");
+  const [courseContent, setCourseContent] = useState("");
 
-  const handleAddCourse = async (data) => {
-    try {
-      await onSaveCourse(data);
-      setToast({ type: "success", message: "Course added successfully!" });
-      reset();
-      setDescription("");
-    } catch (error) {
-      setToast({ type: "error", message: "Error adding course: " + error.message });
-    }
+  const handleAddOverview = (value) => {
+    setOverView(value);
+    setValue("overview", value);
+  };
+  const handleAddCourseContent = (value) => {
+    setCourseContent(value);
+    setValue("courseContent", value);
   };
 
+  const courseFields = [
+    {
+      type: "text",
+      placeholder: "Course Title",
+      name: "title",
+    },
+    {
+      type: "textarea",
+      placeholder: "Course Description",
+      name: "description",
+    },
+    {
+      type: "number",
+      placeholder: "Course Price",
+      name: "price",
+    },
+    {
+      type: "text",
+      placeholder: "Course Language",
+      name: "language",
+    },
+    {
+      type: "text",
+      placeholder: "Course Duration",
+      name: "duration",
+    },
+    {
+      type: "text",
+      placeholder: "Banner image",
+      name: "image",
+    },
+  ];
+
+  async function handleAddCourse(data) {
+    try {
+      const docRef = await addDoc(collection(db, "courses"), {
+        ...data,
+        overview: overView,
+        courseContent: courseContent,
+        registeredStudents: [],
+        reviews: [],
+        createdAt: serverTimestamp(),
+      });
+
+      alert("Course added with ID: " + docRef.id);
+
+      reset();
+      setOverView("");
+      setCourseContent("");
+    } catch (err) {
+      console.error("Error adding course: ", err);
+      alert("Error adding course: " + err.message);
+    }
+  }
+
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-xl my-4 ">
-      {toast && (
-        <div className={`mb-4 px-4 py-2 rounded text-white ${toast.type === "success" ? "bg-green-500" : "bg-red-500"}`}>
-          {toast.message}
-        </div>
-      )}
+    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-xl my-4">
       <h2 className="text-2xl font-semibold text-blue-600 mb-6">
         Add a New Course
       </h2>
-      <form onSubmit={handleSubmit(handleAddCourse)} className="space-y-5">
-        {fields.map((field, index) => (
-          <div key={index}>
-            <label className="block mb-1 text-sm text-gray-700 capitalize" htmlFor={field.name}>
-              {field.label}
-            </label>
-            {field.type === "textarea" ? (
+
+      <form onSubmit={handleSubmit(handleAddCourse)}>
+        {courseFields.map((item, idx) => {
+          if (item.type === "textarea") {
+            return (
               <textarea
-                id={field.name}
-                placeholder={`Enter ${field.label}`}
-                {...register(field.name, { required: true })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                key={idx}
+                className="w-full border border-gray-300 p-2 rounded-md mb-4"
+                placeholder={item.placeholder}
+                {...register(item.name)}
               />
-            ) : (
-              <input
-                id={field.name}
-                type={field.type}
-                placeholder={`Enter ${field.label}`}
-                {...register(field.name, { required: true })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            )}
-          </div>
-        ))}
+            );
+          }
+          return (
+            <input
+              key={idx}
+              className="w-full border border-gray-300 p-2 rounded-md mb-4"
+              type={item.type}
+              placeholder={item.placeholder}
+              {...register(item.name)}
+            />
+          );
+        })}
         <div>
-  <label className="block mb-2 text-sm font-medium text-gray-700">
-    Description *
-  </label>
-  <RichTextEditor
-    value={description}
-    onChange={(value) => {
-      setDescription(value);
-      setValue("description", value); // if using react-hook-form
-    }}
-    placeholder="Write the job description here..."
-  />
-  <p className="mt-1 text-xs text-gray-500">
-    Use the toolbar above to format the job description with headings, lists, links, and more.
-  </p>
-</div>
+          <label htmlFor="" className="text-sm my-2 block">
+            Overview
+          </label>
+          <RichTextEditor
+            value={overView}
+            onChange={(value) => handleAddOverview(value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="" className="text-sm my-2 block ">
+            Course content
+          </label>
+          <RichTextEditor
+            value={courseContent}
+            onChange={(value) => handleAddCourseContent(value)}
+          />
+        </div>
 
         <button
           type="submit"
@@ -95,4 +131,4 @@ const CreateCourseForm = ({ onSaveCourse }) => {
   );
 };
 
-export default CreateCourseForm; 
+export default CreateCourseForm;
