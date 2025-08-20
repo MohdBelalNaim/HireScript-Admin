@@ -24,6 +24,10 @@ const CreateCourseForm = () => {
       placeholder: "Course Title",
       name: "title",
     },
+    {type:"text",
+      placeholder:"Add Course Outlines Seperated by commas",
+      name:"courseOutline",
+    },
     {
       type: "textarea",
       placeholder: "Course Description",
@@ -49,6 +53,18 @@ const CreateCourseForm = () => {
       placeholder: "Banner image",
       name: "image",
     },
+    {type:"number",
+      placeholder:"Add Course Review <= 5",
+      name:"rating",
+    },
+    {type:"date",
+      placeholder:"Enter Start Date",
+      name:"startDate",
+    },
+    {type:"string",
+      placeholder:"Enter Course Link",
+      name:"link",
+    }
   ];
 
   async function handleAddCourse(data) {
@@ -92,6 +108,10 @@ const CreateCourseForm = () => {
             );
           }
           return (
+            <div>
+            <label className="block mb-1 text-sm text-gray-700 capitalize">
+                {item.name}
+            </label> 
             <input
               key={idx}
               className="w-full border border-gray-300 p-2 rounded-md mb-4"
@@ -99,6 +119,7 @@ const CreateCourseForm = () => {
               placeholder={item.placeholder}
               {...register(item.name)}
             />
+            </div>
           );
         })}
         <div>
