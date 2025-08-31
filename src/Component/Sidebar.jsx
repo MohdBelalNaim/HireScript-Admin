@@ -1,6 +1,8 @@
 import React from "react";
 import { Home, Bookmark, User, LogOut, PlusCircleIcon, Book, BookA, FilePlus, File, ListFilter, ListCheck, ListEnd, BookCheck, Blocks, Newspaper, SunMoon, NetworkIcon, NewspaperIcon, ChartNetwork, EllipsisVertical, ReplyAllIcon, CreativeCommons } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
 
 const sidebarItems = [
   { name: "Home", path: "/", icon: <Home size={18} /> },
@@ -23,6 +25,14 @@ const Sidebar = () => {
   const handleNavigation = (path) => {
     navigate(path);
   };
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);      // Sign out from Firebase
+      navigate("/login", { replace: true }); // Redirect to login page
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  }
 
   return (
     <div className="hidden lg:flex flex-col justify-between h-[calc(100vh-122px)] sticky top-5 p-4 border border-gray-300 bg-white rounded-lg w-full sm:w-64">
@@ -40,7 +50,14 @@ const Sidebar = () => {
             {item.icon}
             {item.name}
           </div>
-        ))}
+        ))}        
+      </div>
+      <div
+        onClick={handleLogout}
+        className="flex gap-2 cursor-pointer items-center px-3 py-3 text-sm rounded hover:bg-red-100 text-red-600"
+      >
+        <LogOut size={18} />
+        Logout
       </div>
     </div>
   );

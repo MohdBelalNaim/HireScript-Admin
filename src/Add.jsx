@@ -1,8 +1,8 @@
-
 import { db } from "./firebase";
 import { collection, addDoc, serverTimestamp, Timestamp } from "firebase/firestore";
 import RichTextEditor from "./Component/RichTextEditor";
 import CityAutocomplete from "./Component/CityAutocomplete"; // Import the new component
+import Tiptap from "./Component/TipTap";
 const Add = () => {
   const RTEdata = {
     description: "",
@@ -107,6 +107,9 @@ const Add = () => {
             <option value="None">Select type</option>
             <option value="In office">In office</option>
             <option value="Remote">Remote</option>
+            <option value="Hybrid">Hybrid</option>
+            <option value="Hackathon">Hackathon</option>
+            <option value="Internship">Internship</option>
           </select>
         </div>
 
