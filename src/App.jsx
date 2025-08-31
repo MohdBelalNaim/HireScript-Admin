@@ -1,39 +1,95 @@
-import React, { useState, useEffect } from "react";
-import Home from "./Home";
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-  Navigate,
-  useLocation,
-} from "react-router-dom";
-import Edit from "./Edit";
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AdminPage from "./Pages/AdminPage";
 import AddJobPage from "./Pages/AddJobPage";
 import PeoplePage from "./Pages/PeoplePage";
 import CreateCoursePage from "./Pages/CreateCoursePage";
 import AllCoursesPage from "./Pages/AllCoursesPage";
-import PasswordPage from "./Pages/PasswordPage";
 import AllBlogsPage from "./Pages/AllBlogs";
 import CreateBlogPage from "./Pages/CreateBlog";
 import EditBlogPage from "./Pages/EditBlog";
-
-
+import Edit from "./Edit";
+import LoginPage from "./Pages/LoginPage";
+import ProtectedRoute from "./Component/ProtectedRoutes";
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<AdminPage />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/add" element={<AddJobPage />} />
-        <Route path="/people" element={<PeoplePage />} />
-        <Route path="/edit/:id" element={<Edit />} />
-        <Route path="/create-course" element={<CreateCoursePage />} />
-        <Route path="/courses" element={<AllCoursesPage />} />
-        <Route path="/create-blog" element={<CreateBlogPage />} />
-        <Route path="/blogs" element={<AllBlogsPage />} />
-        <Route path="/edit-blog/:id" element={<EditBlogPage />} />
+        <Route path="/login" element={<LoginPage />} />
+
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <AdminPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/add"
+          element={
+            <ProtectedRoute>
+              <AddJobPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/people"
+          element={
+            <ProtectedRoute>
+              <PeoplePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit/:id"
+          element={
+            <ProtectedRoute>
+              <Edit />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/create-course"
+          element={
+            <ProtectedRoute>
+              <CreateCoursePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/courses"
+          element={
+            <ProtectedRoute>
+              <AllCoursesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/create-blog"
+          element={
+            <ProtectedRoute>
+              <CreateBlogPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/blogs"
+          element={
+            <ProtectedRoute>
+              <AllBlogsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-blog/:id"
+          element={
+            <ProtectedRoute>
+              <EditBlogPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
