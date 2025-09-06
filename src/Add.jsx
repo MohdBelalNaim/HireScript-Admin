@@ -17,15 +17,12 @@ const Add = () => {
     { name: "companyLogo", placeholder: "Enter Company Logo URL", type: "url" },
     { name: "description", placeholder: "Enter Job Description", isRTE: true },
     { name: "experience", placeholder: "Enter Required Experience", type: "number" },
-    { name: "type", placeholder: "Select Job Type" },
     { name: "salary", placeholder: "Enter Salary Amount", type: "number" },
-    { name: "salaryType", placeholder: "Select Salary Type" },
     { name: "jobRequirements", placeholder: "Enter Job Requirements", isRTE: true },
     { name: "companyDescription", placeholder: "Enter Company Description", isRTE: true },
     { name: "applyLink", placeholder: "Enter Application Link", type: "url" },
     { name: "postedBy", placeholder: "Enter Posted By (optional)" },
     { name: "skills", placeholder: "Enter Required Skills" },
-    { name: "about", placeholder: "Enter About Section (optional)" },
     { name: "website", placeholder: "Enter Company Website (optional)", type: "url" }
   ];
   const handleAddJob = async (event) => {
