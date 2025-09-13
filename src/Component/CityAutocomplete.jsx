@@ -81,7 +81,6 @@ const indianCities = [
   { name: "Deoghar", state: "Jharkhand" },
 
   // Karnataka
-  { name: "Bangalore", state: "Karnataka" },
   { name: "Bengaluru", state: "Karnataka" },
   { name: "Mysore", state: "Karnataka" },
   { name: "Hubli", state: "Karnataka" },
