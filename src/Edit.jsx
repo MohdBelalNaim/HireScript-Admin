@@ -1,40 +1,43 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Controller, useForm } from "react-hook-form";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import RichTextEditor from "./Component/RichTextEditor";
+import CityAutocomplete from "./Component/CityAutocomplete";
 
 const EditJob = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    control,
-    formState: { isSubmitting },
-  } = useForm();
-
-
   const [loading, setLoading] = useState(true);
+  const [jobData, setJobData] = useState({});
+  const [location, setLocation] = useState("");
 
   const fields = [
-    "title",
-    "company",
-    "location",
-    "salary",
-    "type",
-    "skills",
-    "experience",
-    "applyLink",
-    "contactEmail",
-    "deadline",
-    "companyLogo",
+    { name: "title", placeholder: "Enter Job Title" },
+    { name: "company", placeholder: "Enter Company Name" },
+    { name: "companyLogo", placeholder: "Enter Company Logo URL", type: "url" },
+    { name: "description", placeholder: "Edit Job Description", isRTE: true },
+    { name: "experience", placeholder: "Enter Required Experience" },
+    { name: "salary", placeholder: "Enter Salary Amount", type: "number" },
+    { name: "jobRequirements", placeholder: "Edit Job Requirements", isRTE: true },
+    { name: "companyDescription", placeholder: "Edit Company Description", isRTE: true },
+    { name: "applyLink", placeholder: "Enter Application Link", type: "url" },
+    { name: "postedBy", placeholder: "Edit Posted By (optional)" },
+    { name: "skills", placeholder: "Edit Required Skills" }, 
+    { name: "website", placeholder: "Edit Company Website (optional)", type: "url" }
   ];
 
-
+  const jobCategories = [
+    "Marketing",
+    "Engineering",
+    "Design",
+    "Finance",
+    "Sales",
+    "HR",
+    "IT Support",
+    "Operations",
+  ];
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -43,7 +46,9 @@ const EditJob = () => {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          reset(docSnap.data());
+          const data = docSnap.data();
+          setJobData(data);
+          setLocation(data.location || "");
         } else {
           alert("Job not found!");
           navigate("/");
@@ -57,11 +62,24 @@ const EditJob = () => {
     };
 
     fetchJob();
-  }, [id, reset, navigate]);
+  }, [id, navigate]);
 
-  const onSubmit = async (data) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setJobData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleRTEChange = (name, value) => {
+    setJobData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      await updateDoc(doc(db, "jobs", id), data);
+      await updateDoc(doc(db, "jobs", id), {
+        ...jobData,
+        location,
+      });
       alert("Job updated successfully!");
       navigate("/");
     } catch (error) {
@@ -78,84 +96,91 @@ const EditJob = () => {
       </div>
 
       {/* Form Section */}
-      <div className="max-w-2xl mx-auto px-4 py-6">
+      <div className="max-w-4xl mx-auto px-4 py-6">
         {loading ? (
           <div className="text-sm text-gray-500">Loading job data...</div>
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {fields.map((field, index) => (
-              <div key={index}>
-                <label className="block mb-1 text-sm text-gray-700 capitalize">
-                  {field}
-                </label>
-                <input
-                  type="text"
-                  {...register(field)}
-                  placeholder={`Enter ${field}`}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
-                />
-              </div>
-            ))}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {fields.map((field, index) =>
+              field.isRTE ? (
+                <div key={index}>
+                  <label className="block mb-1 text-sm text-gray-700">
+                    {field.placeholder}
+                  </label>
+                  <RichTextEditor
+                    value={jobData[field.name] || ""}
+                    onChange={(val) => handleRTEChange(field.name, val)}
+                    placeholder={field.placeholder}
+                  />
+                </div>
+              ) : (
+                <div key={index}>
+                  <label className="block mb-1 text-sm text-gray-700">
+                    {field.placeholder}
+                  </label>
+                  <input
+                    name={field.name}
+                    type={field?.type || "text"}
+                    value={jobData[field.name] || ""}
+                    onChange={handleChange}
+                    placeholder={field.placeholder}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+              )
+            )}
+
+            {/* Job Type */}
             <div>
-              <label className="block mb-1 text-sm text-gray-700 capitalize">
-                Job Description
-              </label>
-            <Controller
-              name="jobDescription"
-              control={control}
-              defaultValue=""
-              render={({ field }) => (
-                <RichTextEditor
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="Edit Job Description "
-                />
-              )}
-            />
+              <label className="block mb-1 text-sm text-gray-700">Job Type</label>
+              <select
+                name="type"
+                value={jobData.type || "None"}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="None">Select type</option>
+                <option value="In office">In office</option>
+                <option value="Remote">Remote</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="Hackathon">Hackathon</option>
+                <option value="Internship">Internship</option>
+              </select>
             </div>
+
+            {/* Location */}
             <div>
-              <label className="block mb-1 text-sm text-gray-700 capitalize">
-                Company Description
-              </label>
-            <Controller
-              name="companyDescription"
-              control={control}
-              defaultValue=""
-              render={({ field }) => (
-                <RichTextEditor
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="Edit Company Description "
-                />
-              )}
-            />
+              <label className="block mb-1 text-sm text-gray-700">Location *</label>
+              <CityAutocomplete
+                value={location}
+                onChange={(val) => setLocation(val)}
+                placeholder="Search for Indian cities..."
+                required={true}
+              />
             </div>
+
+            {/* Job Category */}
             <div>
-              <label className="block mb-1 text-sm text-gray-700 capitalize">
-                Job Requirement
-              </label>
-            <Controller
-              name="jobRequirements"
-              control={control}
-              defaultValue=""
-              render={({ field }) => (
-                <RichTextEditor
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="Edit Job Requirement "
-                />
-              )}
-            />
+              <label className="block mb-1 text-sm text-gray-700">Job Category</label>
+              <select
+                name="category"
+                value={jobData.category || ""}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                required
+              >
+                <option value="" disabled>Select category</option>
+                {jobCategories.map((cat) => (
+                  <option value={cat} key={cat}>{cat}</option>
+                ))}
+              </select>
             </div>
+
             <button
               type="submit"
-              disabled={isSubmitting}
-              className={`w-full px-4 py-2 rounded-md text-white text-sm transition ${isSubmitting
-                  ? "bg-blue-300 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700"
-                }`}
+              className="w-full px-4 py-2 rounded-md text-white text-sm transition bg-blue-600 hover:bg-blue-700"
             >
-              {isSubmitting ? "Updating..." : "Update Job"}
+              Update Job
             </button>
           </form>
         )}
